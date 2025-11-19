@@ -1,4 +1,4 @@
-# MCP Server Agente (n8n + AI + MCP)
+# MCP Server Agent (n8n + AI + MCP)
 
 This project demonstrates how to integrate an **AI chat agent** with an **MCP Server (Model Context Protocol)** inside an **n8n workflow**. The workflow uses MCP tools to extend the model’s capabilities, enabling secure tool execution, dynamic actions, and real-time responses inside the chat.
 
