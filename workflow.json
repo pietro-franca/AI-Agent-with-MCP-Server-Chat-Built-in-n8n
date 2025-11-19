@@ -1,0 +1,178 @@
+{
+  "name": "MCP Server Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        0
+      ],
+      "id": "f3bccc2f-7cf3-4e53-b72f-f3a60798d27f",
+      "name": "When chat message received",
+      "webhookId": "a7170f70-0ac8-423b-ad53-0c6c4899e006"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "You are a highly efficient AI automation assistant, capable of dynamically integrating and executing tools to retrieve real-time information.\n\n- Always list available tools first (listTools) bafore executing any tool\n\n- For web searches, use Brave Search MCP to retrieve the most accurate and up-to-date results\n\n- Ensure tools are selected based on the most relevant match to the user query\n\n- Automatically determine and execute the best tool for the task (executeTool) only after listing tools\n\n- You can use only brave_web_search and brave_local_search, don't try using other tools"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        352,
+        0
+      ],
+      "id": "890d8918-d7ba-4ddc-a998-a68786532fd3",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        224,
+        224
+      ],
+      "id": "f2e053cd-1166-4b1c-b4a0-6ea069836f93",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "o1xkAp0FrVAvv8fC",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        352,
+        224
+      ],
+      "id": "e6a18e80-5567-4492-a97b-2efe2a0b7c71",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-mcp.mcpClientTool",
+      "typeVersion": 1,
+      "position": [
+        480,
+        224
+      ],
+      "id": "23f3781a-b148-4444-922c-ab3cbc67da61",
+      "name": "MCP Client",
+      "credentials": {
+        "mcpClientApi": {
+          "id": "8YMhwmzmE2k5JKSZ",
+          "name": "MCP Client (STDIO) account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeTool",
+        "toolName": "={{ $fromAI(\"tool\", \"selected tool to execute\") || \"\" }}",
+        "toolParameters": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Tool_Parameters', ``, 'json') }}"
+      },
+      "type": "n8n-nodes-mcp.mcpClientTool",
+      "typeVersion": 1,
+      "position": [
+        608,
+        224
+      ],
+      "id": "8fd8c256-ef56-4bb9-843b-661c788435f7",
+      "name": "MCP Client1",
+      "credentials": {
+        "mcpClientApi": {
+          "id": "8YMhwmzmE2k5JKSZ",
+          "name": "MCP Client (STDIO) account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MCP Client": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MCP Client1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "1476b20e-06c9-4ed0-9f3b-832caaa1f751",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d78143f080555514505f17c31cab37be559ed3cdda8ae31379e4244932c4e441"
+  },
+  "id": "MWCoQtKhzWRI1Bjb",
+  "tags": []
+}
